@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Window Example</title>
+</head>
+<body>
+	<script src="myWindow.js"></script>
+	<script>
+		let myContentElement=document.createElement('div');
+		myContentElement.style.background="lightgray";
+		myContentElement.style.overflow="auto";
+		myContentElement.innerHTML=`
+			Bsp. Eingabe:
+			<br>
+			<textarea style="width: 98%;margin-left: 0.5%;height: 290px;" id="myInput"></textarea>
+			<br>
+			<button id="myBtnSearch" style="margin:  0px;">senden</button>
+			`;
+		document.addEventListener('DOMContentLoaded', () => {
+			createMyWindow(
+						"window sample 1",
+						closeCallback=()=>{
+							//alert("closing not supportet");
+							//return false;
+							return true;
+						},
+						myContentElement,
+						/*myID*/ 'windowSample1',
+						/*startPos*/ [5,5],
+						/*startSize*/ [500,400],
+						/*startZIndex*/ 10001,
+					);
+		});
+	</script>
+</body>
+</html>

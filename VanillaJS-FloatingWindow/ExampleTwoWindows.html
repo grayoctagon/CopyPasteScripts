@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Window Example with two Windows</title>
+</head>
+<body>
+	<script src="myWindow.js"></script>
+	<script>
+		let myContentElement1=document.createElement('div');
+		myContentElement1.style.background="lightgray";
+		myContentElement1.style.overflow="auto";
+		myContentElement1.innerHTML=`
+			Bsp. Eingabe:
+			<br>
+			<textarea style="width: 98%;margin-left: 0.5%;height: 290px;" id="myInput"></textarea>
+			<br>
+			<button id="myBtnSearch" style="margin:  0px;">senden</button>
+			`;
+		document.addEventListener('DOMContentLoaded', () => {
+			createMyWindow(
+						"window sample 1",
+						closeCallback=()=>{
+							//alert("closing not supportet");
+							//return false;
+							return true;
+						},
+						myContentElement1,
+						/*myID*/ 'windowSample1',
+						/*startPos*/ [5,5],
+						/*startSize*/ [500,400],
+						/*startZIndex*/ 10001,
+					);
+		});
+		
+		//2nd window:
+		let myContentElement2=document.createElement('div');
+		myContentElement2.style.background="lightgray";
+		myContentElement2.style.overflow="hidden";
+		myContentElement2.innerHTML=`
+			<div id="myball" style="position: absolute;width: 20px;height: 20px;background: red;border-radius: 50%;"></div>
+			`;
+		document.addEventListener('DOMContentLoaded', () => {
+			createMyWindow(
+						"window sample 2 with Pong",
+						closeCallback=()=>{
+							//alert("closing not supportet");
+							//return false;
+							return true;
+						},
+						myContentElement2,
+						/*myID*/ 'windowSample2withPong',
+						/*startPos*/ [300,200],
+						/*startSize*/ [500,400],
+						/*startZIndex*/ 10001,
+					);
+			moveBall();
+		});
+		//simple Pong
+		let r=2+Math.random()*4;
+		let x = Math.round(Math.random()*500), y = Math.round(Math.random()*400), vx = r, vy = 6-r;
+		function moveBall() {
+			x += vx; y += vy;
+			const cw = myContentElement2.clientWidth, ch = myContentElement2.clientHeight;
+			let hit = false;
+			if (x < 0 || x + 20 > cw) {
+				vx = -vx;
+				hit = true;
+			}
+			if (y < 0 || y + 20 > ch) {
+				vy = -vy;
+				hit = true;
+			}
+			if (hit) {
+				myball.style.transition = "none"; // Instantly change to blue
+				myball.style.background = "blue";
+				requestAnimationFrame(() => {
+					myball.style.transition = "background-color 2s ease-out"; // Smooth fade back to red
+					myball.style.background = "red";
+				});
+			}
+			x = Math.max(0, Math.min(x, cw - 20));
+			y = Math.max(0, Math.min(y, ch - 20));
+			myball.style.transform = `translate(${x}px, ${y}px)`;
+			requestAnimationFrame(moveBall);
+		}
+		new ResizeObserver(() => {
+			x = Math.max(0, Math.min(x, myContentElement2.clientWidth - 20));
+			y = Math.max(0, Math.min(y, myContentElement2.clientHeight - 20));
+		}).observe(myContentElement2);
+	</script>
+</body>
+</html>
