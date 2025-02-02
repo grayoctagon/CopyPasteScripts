@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Stern-Designer</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			text-align: center;
+			margin: 20px;
+		}
+		.controls {
+			margin-bottom: 20px;
+		}
+		input {
+			width: 50px;
+			text-align: center;
+		}
+		#svgContainer {
+			margin-top: 20px;
+			display: inline-block;
+			border: 1px solid black;
+			padding: 10px;
+		}
+	</style>
+</head>
+<body>
+
+	<h1>Stern-Designer</h1>
+	<div class="controls">
+		<label>Sternspitzen: <input type="number" id="points" value="5" min="3"></label>
+		<label>Äußerer Radius: <input type="number" id="outerRadius" value="100" min="10"></label>
+		<label>Innerer Radius: <input type="number" id="innerRadius" value="50" min="5"></label>
+		<button onclick="generateStar()">Stern erstellen</button>
+	</div>
+
+	<div id="svgContainer"></div>
+
+	<button onclick="downloadSVG()">SVG herunterladen</button>
+
+	<script>
+		function generateStar() {
+			let points = parseInt(document.getElementById('points').value);
+			let outerRadius = parseFloat(document.getElementById('outerRadius').value);
+			let innerRadius = parseFloat(document.getElementById('innerRadius').value);
+			
+			let centerX = outerRadius + 10;
+			let centerY = outerRadius + 10;
+			let angle = Math.PI / points;
+			let pathData = "";
+
+			for (let i = 0; i < 2 * points; i++) {
+				let r = (i % 2 === 0) ? outerRadius : innerRadius;
+				let x = centerX + r * Math.cos(i * angle);
+				let y = centerY + r * Math.sin(i * angle);
+				pathData += (i === 0 ? "M" : "L") + x.toFixed(2) + "," + y.toFixed(2) + " ";
+			}
+			pathData += "Z";
+
+			let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${2 * outerRadius + 20}" height="${2 * outerRadius + 20}">
+						<path d="${pathData}" fill="gold" stroke="black" stroke-width="2"/>
+					   </svg>`;
+
+			document.getElementById('svgContainer').innerHTML = svg;
+		}
+
+		function downloadSVG() {
+			let svg = document.getElementById('svgContainer').innerHTML;
+			let blob = new Blob([svg], { type: 'image/svg+xml' });
+			let link = document.createElement('a');
+			link.href = URL.createObjectURL(blob);
+			link.download = "stern.svg";
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+
+		generateStar(); // Start mit Standardwerten
+	</script>
+
+</body>
+</html>

@@ -31,6 +31,16 @@ It can be used to encrypt files and transfer them in an unsecured or untrusted w
 ### Datails are in a separate Readme.md: 
 [CryptoCrafter\README.md](CryptoCrafter\README.md)
 
+
+## Stern-Designer 
+[Stern-Designer](Stern-Designer/)
+Ein einfacher Web-Designer zum Erstellen von SVG-Sternen mit anpassbarer Anzahl an Spitzen, innerem und äußerem Radius. Das fertige SVG kann heruntergeladen werden.
+
+🚀 Features
+- Echtzeit-Generierung des Sterns
+- Anpassbare Spitzenanzahl, innerer und äußerer Radius
+- SVG-Download mit einem Klick
+
 ## License: 
 Attribution-ShareAlike 4.0 International CC-BY-SA 
 
