@@ -34,7 +34,7 @@ It can be used to encrypt files and transfer them in an unsecured or untrusted w
 
 ## Stern-Designer 
 [Stern-Designer](Stern-Designer/)
-Ein einfacher Web-Designer zum Erstellen von SVG-Sternen mit anpassbarer Anzahl an Spitzen, innerem und äußerem Radius. Das fertige SVG kann heruntergeladen werden.
+Ein einfacher Web-Designer zum Erstellen von SVG-Sternen mit anpassbarer Anzahl an Spitzen, innerem und äußerem Radius. Die Vorschau aktualisiert sich in Echtzeit, und das fertige SVG kann heruntergeladen werden.
 
 🚀 Features
 - Echtzeit-Generierung des Sterns

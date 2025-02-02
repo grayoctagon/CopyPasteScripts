@@ -32,7 +32,6 @@
 		<label>Sternspitzen: <input type="number" id="points" value="5" min="3"></label>
 		<label>Äußerer Radius: <input type="number" id="outerRadius" value="100" min="10"></label>
 		<label>Innerer Radius: <input type="number" id="innerRadius" value="50" min="5"></label>
-		<button onclick="generateStar()">Stern erstellen</button>
 	</div>
 
 	<div id="svgContainer"></div>
@@ -75,6 +74,11 @@
 			link.click();
 			document.body.removeChild(link);
 		}
+
+		// Eventlistener hinzufügen, um den Stern automatisch zu aktualisieren
+		document.getElementById('points').addEventListener('input', generateStar);
+		document.getElementById('outerRadius').addEventListener('input', generateStar);
+		document.getElementById('innerRadius').addEventListener('input', generateStar);
 
 		generateStar(); // Start mit Standardwerten
 	</script>
