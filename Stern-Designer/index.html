@@ -23,6 +23,15 @@
 			border: 1px solid black;
 			padding: 10px;
 		}
+		.github-link {
+			margin-top: 20px;
+			font-size: 14px;
+		}
+		.github-link a {
+			text-decoration: none;
+			color: #0366d6;
+			font-weight: bold;
+		}
 	</style>
 </head>
 <body>
@@ -35,8 +44,12 @@
 	</div>
 
 	<div id="svgContainer"></div>
-
+	<br/>
 	<button onclick="downloadSVG()">SVG herunterladen</button>
+
+	<div class="github-link">
+		<p>🔗 <a href="https://github.com/grayoctagon/CopyPasteScripts?tab=readme-ov-file#stern-designer" target="_blank">GitHub Repository</a></p>
+	</div>
 
 	<script>
 		function generateStar() {
