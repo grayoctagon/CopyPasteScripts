@@ -3,7 +3,7 @@
 	Version: 2025-07-06
 	License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 	License URL: https://creativecommons.org/licenses/by-sa/4.0/
-	Repository: https://github.com/grayoctagon/CopyPasteScripts
+	Repository: https://github.com/grayoctagon/CopyPasteScripts/#floatingclock
 
 	You are free to:
 	- Share: Copy and redistribute the material in any medium or format.
@@ -17,7 +17,7 @@
 	This work is provided "as is" without any warranties or guarantees of any kind.
 
 	Description: 
-	 und skalierbare Digitaluhr (Dark‑Mode) hinzu.
+	floatingClock.js – fügt einer Website eine frei positionier‑ und skalierbare Digitaluhr (Dark‑Mode) hinzu.
 	 ‑ 24‑h‑Format mit Sekunden
 	 ‑ zweite Zeile: deutsches Datum + Wochentags‑Kürzel
 	 ‑ Drag‑&‑Drop (Maus + Touch) zum Verschieben
@@ -25,34 +25,44 @@
 	 Einbinden: <script src="floatingClock.js"></script>
  */
 
+// Initialisierung nach DOM‑Load
 document.addEventListener("DOMContentLoaded", function(){
 	mkFloatingClock();
 });
+
 function mkFloatingClock() {
-	/** 1. CSS ‑ nur einmal anhängen	*/
+	let startSize=[200,100];
+	let startPos=[window.innerWidth-startSize[0],0];
+	/** 1. CSS – nur einmal anhängen */
 	if (!document.getElementById("floatingClockStyle")) {
 		const css = `
 			#floatingClock {
+				box-sizing: border-box;
 				position: fixed;
 				top: 20px;
 				left: 20px;
-				min-width: 160px;
-				min-height: 80px;
-				background: #111;
-				color: #0f0;
-				font-family: 'Courier New', monospace;
-				font-size: 2.4rem;
-				line-height: 1.25;
-				padding: 14px 24px;
+				min-width: 80px;
+				min-height: 40px;
+				width: `+startSize[0]+`px;
+				height: `+startSize[1]+`px;
+				background: rgba(42, 42, 42, 0.8);
+				padding: 1px 2px;
 				border-radius: 16px;
-				box-shadow: 0 0 14px rgba(0, 255, 0, 0.25);
+				box-shadow: 0 0 14px rgba(0, 255, 0, 0.9);
 				user-select: none;
 				touch-action: none; /* ermöglicht Pointer‑Gesten */
 				overflow: hidden;
 				z-index: 9999;
 			}
+			.floatingClockText {
+				opacity: 0.8;
+				fill: #0f0;
+				font-family: 'Courier New', monospace;
+				line-height: 1.25;
+				font-size: 40px;
+			}
 			#floatingClock .date {
-				font-size: 1.2rem;
+				font-size: 22px;
 				opacity: 0.8;
 			}
 			#floatingClock .resize-handle {
@@ -78,40 +88,50 @@ function mkFloatingClock() {
 	if (document.getElementById("floatingClock")) return; // schon da
 
 	const clock = document.createElement("div");
+	window.clock=clock;
 	clock.id = "floatingClock";
 	clock.innerHTML = `
-			<div class="time">00:00:00</div>
-			<div class="date">Mo 01.01.1970</div>
-			<span class="resize-handle tl"></span>
+			<svg xmlns="http://www.w3.org/2000/svg" id="floatingClockSVG" viewBox="0 0 200 100" width="100%" height="100%">
+				<text x="100" y="40" class="time floatingClockText" text-anchor='middle'>00:00:00</text>
+				<text x="100" y="80" class="date floatingClockText" text-anchor='middle'>Mo 01.01.1970</text>
+			</svg>
+			<!--<span class="resize-handle tl"></span>
 			<span class="resize-handle tr"></span>
-			<span class="resize-handle bl"></span>
+			<span class="resize-handle bl"></span>-->
 			<span class="resize-handle br"></span>`;
+	clock.innerHTML +=" ";
 	document.body.appendChild(clock);
 
-	/** 3. Zeit & Datum aktualisieren */
-	const weekdays = [
-		"So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"
-	];
+	const resizeHandles = clock.querySelectorAll('.resize-handle');
+
+	/** 3. Zeit & Datum aktualisieren + dynamische Farbmodi */
+	const weekdays = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 	function update() {
 		const now = new Date();
 		const timeStr = now.toLocaleTimeString("de-DE", {
-			hour12: false,
-			hour: "2-digit",
-			minute: "2-digit",
-			second: "2-digit",
+			hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit"
 		});
 		const dateStr = now.toLocaleDateString("de-DE", {
-			day: "2-digit",
-			month: "2-digit",
-			year: "numeric",
+			day: "2-digit", month: "2-digit", year: "numeric"
 		});
+
 		clock.querySelector(".time").textContent = timeStr;
 		clock.querySelector(".date").textContent = `${weekdays[now.getDay()]} ${dateStr}`;
+
+		/* Farbschema je nach Tageszeit */
+		const h = now.getHours();
+		let col = "#0f0";						// Standard (10‑18 Uhr)
+		if (h >= 22 || h < 7) col = "#00aaff";								// Nacht
+		else if ((h >= 7 && h < 9) || (h >= 18 && h < 22)) col = "#ff8800"; // Morgen/Abend
+
+		clock.style.color = col;
+		clock.style.boxShadow = `0 0 14px ${col}40`;
+		resizeHandles.forEach(h => (h.style.borderColor = col));
 	}
 	update();
 	setInterval(update, 1000);
 
-	/** 4. Drag & Drop	(PointerEvents) */
+	/** 4. Drag & Drop (PointerEvents) */
 	let dragData = null;
 	clock.addEventListener("pointerdown", (ev) => {
 		if (ev.target.classList.contains("resize-handle")) return; // Resizing übernimmt eigener Handler
@@ -132,22 +152,28 @@ function mkFloatingClock() {
 	});
 	clock.addEventListener("pointercancel", () => (dragData = null));
 
-	/** 5. Resize via Handles (Maus + Touch) */
+	/** 5. Resize via Handles (Seitenverhältnis fix) */
 	clock.querySelectorAll(".resize-handle").forEach((handle) => {
 		handle.addEventListener("pointerdown", (ev) => {
+			let isResizing = true;
+			let startX = ev.clientX;
+			let startY = ev.clientY;
+			let startWidth = clock.offsetWidth;
+			let startHeight = clock.offsetHeight;
+			console.log(Math.round(startWidth),Math.round(startHeight));
+			//console.log(Math.round(ev.clientX),Math.round(ev.clientY));
+			
 			ev.stopPropagation(); // Drag nicht auslösen
-			const startRect = clock.getBoundingClientRect();
-			const startX = ev.clientX;
-			const startY = ev.clientY;
-			const dirX = handle.classList.contains("tr") || handle.classList.contains("br") ? 1 : -1;
-			const dirY = handle.classList.contains("bl") || handle.classList.contains("br") ? 1 : -1;
 			function onMove(moveEv) {
-				const dx = (moveEv.clientX - startX) * dirX;
-				const dy = (moveEv.clientY - startY) * dirY;
-				clock.style.width = `${Math.max(120, startRect.width + dx)}px`;
-				clock.style.height = `${Math.max(60, startRect.height + dy)}px`;
+				const dx = (moveEv.clientX - startX);
+				//console.log(Math.round(moveEv.clientX),Math.round(moveEv.clientY));
+				//const dy = (moveEv.clientY - startY);
+				let newW=startWidth+dx;
+				let newH=startHeight*(newW / startWidth);
+				clock.style.width = `${newW}px`;
+				clock.style.height = `${newH}px`;
 			}
-			function onUp(upEv) {
+			function onUp() {
 				document.removeEventListener("pointermove", onMove);
 				document.removeEventListener("pointerup", onUp);
 			}
@@ -156,15 +182,12 @@ function mkFloatingClock() {
 		});
 	});
 
-	/** 6. Zwei‑Finger‑Pinch‑Zoom (Touch) */
+	/** 6. Zwei‑Finger‑Pinch‑Zoom (Touch, Seitenverhältnis fix) */
 	const active = new Map();
 	let pinchData = null;
-	function midPoint(a, b) {
-		return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-	}
-	function distance(a, b) {
-		return Math.hypot(a.x - b.x, a.y - b.y);
-	}
+	function midPoint(a, b) { return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
+	function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
 	clock.addEventListener("pointerdown", (ev) => {
 		active.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
 		if (active.size === 2) {
@@ -176,6 +199,7 @@ function mkFloatingClock() {
 			};
 		}
 	});
+
 	clock.addEventListener("pointermove", (ev) => {
 		if (!active.has(ev.pointerId)) return;
 		active.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
