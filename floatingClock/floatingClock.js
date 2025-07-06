@@ -17,7 +17,6 @@
 	This work is provided "as is" without any warranties or guarantees of any kind.
 
 	Description: 
-	floatingClock.js – fügt einer Website eine frei positionier‑
 	 und skalierbare Digitaluhr (Dark‑Mode) hinzu.
 	 ‑ 24‑h‑Format mit Sekunden
 	 ‑ zweite Zeile: deutsches Datum + Wochentags‑Kürzel
