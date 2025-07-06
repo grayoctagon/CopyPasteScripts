@@ -18,6 +18,16 @@ The system is designed to handle multiple windows at the same time, ensuring the
 
 https://raw.githubusercontent.com/grayoctagon/CopyPasteScripts/refs/heads/main/assetsForGit/VanillaJS-FloatingWindow.mp4
 
+## floatingClock
+[floatingClock](floatingClock/)
+
+fügt einer Website eine frei positionier‑ und skalierbare Digitaluhr (Dark‑Mode) hinzu.
+- 24‑h‑Format mit Sekunden
+- zweite Zeile: deutsches Datum + Wochentags‑Kürzel
+- Drag‑&‑Drop (Maus + Touch) zum Verschieben
+- Resize‑Handles + Zwei‑Finger‑Pinch zum Skalieren
+Einbinden: <script src="floatingClock.js"></script>
+
 
 ## CryptoCrafter (Hybrid Encryption Scripts)
 [CryptoCrafter](CryptoCrafter/)
