@@ -126,6 +126,7 @@ function mkFloatingClock() {
 
 		clock.style.color = col;
 		clock.style.boxShadow = `0 0 14px ${col}40`;
+		clock.querySelectorAll(".floatingClockText").forEach(h => (h.style.fill=col));
 		resizeHandles.forEach(h => (h.style.borderColor = col));
 	}
 	update();
