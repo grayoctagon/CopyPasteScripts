@@ -31,16 +31,33 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 
 function mkFloatingClock() {
-	let startSize=[200,100];
-	let startPos=[window.innerWidth-startSize[0],0];
+	// Einstellungen aus localStorage laden oder Defaults nehmen
+	let savedSettings = {};
+	try {
+		savedSettings = JSON.parse(localStorage.getItem("floatingclockSettings")) || {};
+	} catch (e) {}
+
+	let startSize = [savedSettings.width || 200, savedSettings.height || 100];
+	let startPos = [savedSettings.left || (window.innerWidth - startSize[0]), savedSettings.top || 0];
+
+	// Hilfsfunktion zum Speichern
+	function saveClockSettings() {
+		const rect = clock.getBoundingClientRect();
+		localStorage.setItem("floatingclockSettings", JSON.stringify({
+			left: rect.left,
+			top: rect.top,
+			width: rect.width,
+			height: rect.height
+		}));
+	}
 	/** 1. CSS – nur einmal anhängen */
 	if (!document.getElementById("floatingClockStyle")) {
 		const css = `
 			#floatingClock {
 				box-sizing: border-box;
 				position: fixed;
-				top: 20px;
-				left: 20px;
+				left: ` + startPos[0] + `px;
+				top: ` + startPos[1] + `px;
 				min-width: 80px;
 				min-height: 40px;
 				width: `+startSize[0]+`px;
@@ -147,6 +164,7 @@ function mkFloatingClock() {
 		if (!dragData || dragData.pointerId !== ev.pointerId) return;
 		clock.style.left = `${ev.clientX - dragData.offsetX}px`;
 		clock.style.top = `${ev.clientY - dragData.offsetY}px`;
+		saveClockSettings();
 	});
 	clock.addEventListener("pointerup", (ev) => {
 		if (dragData && dragData.pointerId === ev.pointerId) dragData = null;
@@ -173,6 +191,7 @@ function mkFloatingClock() {
 				let newH=startHeight*(newW / startWidth);
 				clock.style.width = `${newW}px`;
 				clock.style.height = `${newH}px`;
+				saveClockSettings();
 			}
 			function onUp() {
 				document.removeEventListener("pointermove", onMove);
@@ -216,6 +235,7 @@ function mkFloatingClock() {
 			const mid = midPoint(pts[0], pts[1]);
 			clock.style.left = `${mid.x - newW / 2}px`;
 			clock.style.top = `${mid.y - newH / 2}px`;
+			saveClockSettings();
 		}
 	});
 	function clearPointer(ev) {
